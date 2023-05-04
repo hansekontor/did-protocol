@@ -1,4 +1,6 @@
 # DID Protocol on eCash
+Version: v0.0.1
+Date Published: May 4, 2023
 
 A Protocol designed to use Decentralized Identifiers (DID) and Verifiable Credentials (VCs) on the eCash blockchain. 
 
