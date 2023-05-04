@@ -87,7 +87,7 @@ A [Verifiable Credential](https://www.w3.org/TR/vc-data-model/) (VC) is a certif
   </tr>
   <tr>
     <td>/expirationBlock</td>
-    <td>block height that causes the VC to expire</td>
+    <td>last block height before VC becomes invalid</td>
     <td>OP_RETURN</td>
   </tr>
   <tr>
@@ -177,7 +177,10 @@ An operation code refers to the possible VC operations.
 #### 2.1.2 credential_code
 The credential code is a 4-byte abbreviation that can refer to additional information related to the specific VC type. Credential codes express the credential type on-chain and indicate the syntax for the claims. Credential codes default to `0000` if not specified otherwise.
 
-#### 2.1.3 claims
+#### 2.1.3 expiration_block
+The expiration of a VC is given as the last block that the VC is still valid. Expiration block can be set to `0` to mark indefinite validity.
+
+#### 2.1.4 claims
 There are two possibilities to add the same claim to the on-chain script. Either it can be added **with** the keys as a JSON object `{"key1":"value1","key2":"value2"}` or **without** the keys as JSON array `["value1", "value2"]`. The decision which notation should be used falls to the issuer. If the claim structure (the order of values in the JSON array) for a given credential code is known to wallets, recipients or verifiers, the keys could be ommitted which saves on-chain sapce. Keys could also be ommitted if they are supposed to be secret. 
 
 ### 2.2 Updating a Verifiable Credential
@@ -286,50 +289,30 @@ A unique username could be assigned to an eCash address. This username could be 
 ```javascript
 const VC = require('ecash-did-cert');
 
-const options = {
-    type: "UsernameCredential",     
+const usernameOptions = {
+    issuerAddress: "ecash:qzwaq0yyqc3t6zqm75eqtjz5h3jrzztka5e7ne58nx",
+    subjectAddress: "ecash:qpr9erjh78uct7lc7m2f0ueq2dmnd535du54fvmttx",
+    type: "UsernameCredential",
     credentialTypeCode: "usnm",
-    expirationBlock: 800000,
     claims: {
-        username: "rolf3000",
-    }, 
-    claimKeys: ["username"],
+        username: "paul4"
+    },
+    expirationBlock: 987654
 };
-vc = VC.fromOptions(options);
-const opReturn = vc.buildCreationScript(); 
-console.log(opReturn.raw.toString());
-```
-Running this, will result in an OP_RETURN script, that should be added to the first output of the tx.
-```
-6a0464696400046365727401430475736e6d08000000000001b207137b22757365726e616d65223a22616e6479227d
-```
+const usernameVC = new VC(usernameOptions);
+console.log("usernameVC", usernameVC);
 
-
-### 4.2 Token Registration
-As SLP tokens are permissionless, there is no boundary as to how many tokens with equal properties can exist (name, ticker). While they still are differentiable by their token id, few users know how to verifiy this by themselves. Trying to prevent eToken fraud, tokens can be verified. A VC must put together token properties such as name and ticker with a token id. Only one token using the same properties can be verified at the same time. Wallets can therefore flag tokens depending on their verification status, similar to a browser indicating the use of an https connection. The "recipient" of this VC is the verified token creator who is the Controller of the token subject.
-
-```javascript
-const VC = require('ecash-did-cert');
-
-const options = {
-    type: "TokenCredential",     
-    credentialTypeCode: "tokn",
-    expirationBlock: 80123,
-    claims: {
-        id: "58b63d54cafe97fc1d9c45a33c699468763ec7de1bb3f478b6929ac95b87d3c5",
-        name: "Example Token",
-        ticker: "EXT",
-        status: "verified"
-    }, 
-    valueNotation: true
-};
-vc = VC.fromOptions(options);
-const opReturn = vc.buildCreationScript(); 
-console.log(opReturn.raw.toString());
+const usernameScript = usernameVC.buildCreationScript();
+console.log("OP_RETURN script", usernameScript.raw.toString('hex'));
 ```
+Running this, will result in an OP_RETURN script, that should be added to the first output of the transaction.
 ```
-6a04646964000463657274014304746f6b6e0800000000000138fb4c837b226964223a2235386236336435346361666539376663316439633435613333633639393436383736336563376465316262336634373862363932396163393562383764336335222c226e616d65223a224578616d706c6520546f6b656e222c227469636b6572223a22455854222c22737461747573223a227665726966696564227d
+6a0464696400046365727401430475736e6d0800000000000f1206147b22757365726e616d65223a227061756c34227d
 ```
+The second output of the transaction should send 546 sats to the `subjectAddress`.
+
+### 4.2 Payment Certificates
+
 
 ## 5 References
 
