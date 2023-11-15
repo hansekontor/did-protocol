@@ -138,7 +138,7 @@ Verifiable Credentials on eCash are issued by broadcasting a transaction. The CR
    &lt;method: 'cert'&gt; (4 bytes, ascii)<br/>
    &lt;operation_code: 'C'&gt; (1 byte, ascii)<br/>
    &lt;credential_code&gt; (4 bytes, ascii)<br/>
-   &lt;expiration_block&gt; (8 bytes integer)<br/>
+   &lt;expiration_block&gt; (4 bytes integer)<br/>
    &lt;claims&gt; (0 to 188 bytes)<br/>
    </td>
     <td>typically 0</td>
@@ -204,7 +204,7 @@ It might be necessary to update a Verifiable Credential's claims or expiration b
    &lt;operation_code: 'U'&gt; (1 byte, ascii)<br/>
    &lt;credential_code&gt; (4 bytes, ascii)<br/>
    &lt;reference_id&gt; (4 bytes, integer)<br/>
-   &lt;expiration_block&gt; (8 byte integer)<br/>
+   &lt;expiration_block&gt; (4 byte integer)<br/>
    &lt;claims&gt; (0 to 188 bytes)<br/>
    </td>
     <td>typically 0</td>
@@ -309,7 +309,7 @@ console.log("OP_RETURN script", usernameScript.raw.toString('hex'));
 ```
 Running this, will result in an OP_RETURN script, that should be added to the first output of the transaction.
 ```
-6a0464696400046365727401430475736e6d0800000000000f1206147b22757365726e616d65223a227061756c34227d
+6a0464696400046365727401430475736e6d04000f1206147b22757365726e616d65223a227061756c34227d
 ```
 The second output of the transaction should send 546 sats to the `subjectAddress`.
 

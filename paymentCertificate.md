@@ -34,7 +34,7 @@ The claim within the OP_RETURN script contains the payment shares, the recipient
    &lt;method: 'cert'&gt; (4 bytes, ascii)<br/>
    &lt;operation_code: 'C'&gt; (1 byte, ascii)<br/>
    &lt;credential_code: 'paym'&gt; (4 bytes, ascii)<br/>
-   &lt;expiration_block: 0&gt; (8 bytes integer)<br/>
+   &lt;expiration_block: 0&gt; (4 bytes integer)<br/>
    &lt;claims&gt; (0 to 188 bytes)<br/>
    </td>
     <td>typically 0</td>
@@ -114,7 +114,7 @@ console.log(paymentScript.raw.toString('hex'));
 ```
 The resulting OP_RETURN script is: 
 ```
-6a046469640004636572740143047061796d0800000000000000001e7b22736861726573223a5b302e3736313930352c302e3139303437365d7d
+6a046469640004636572740143047061796d04000000001e7b22736861726573223a5b302e3736313930352c302e3139303437365d7d
 ```
 While the two recipients of the specified shares must be the recipients of 546 sats in `vout1`and `vout2` as in [this transaction](https://explorer.be.cash/tx/3670c9a4a6f252d42d1359c6b78711e6036f0960dedcc519c4085deaf824e204).
 
